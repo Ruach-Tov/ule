@@ -1,0 +1,467 @@
+{
+  "description": "Meta-test specification: for each test file, what the tool MUST report and what mutations would demonstrate failure.",
+  "tests": [
+    {
+      "file": "Test01_LinearChain.lean",
+      "targets": [
+        "target"
+      ],
+      "expected_dead": [
+        "dead_lemma"
+      ],
+      "expected_live": [
+        "base_fact",
+        "step_one",
+        "step_two",
+        "target"
+      ],
+      "meta_mutation": "If tool fails to remove dead_lemma, the minimized file differs from expected.",
+      "properties": [
+        "S1",
+        "C1"
+      ]
+    },
+    {
+      "file": "Test02_DiamondDep.lean",
+      "targets": [
+        "target"
+      ],
+      "expected_dead": [
+        "dead_branch"
+      ],
+      "expected_live": [
+        "base",
+        "left_path",
+        "right_path",
+        "target"
+      ],
+      "meta_mutation": "If tool removes base (shared), minimized won't compile.",
+      "properties": [
+        "S1",
+        "C1"
+      ]
+    },
+    {
+      "file": "Test03_SharedLemma.lean",
+      "targets": [
+        "target"
+      ],
+      "expected_dead": [
+        "dead_user"
+      ],
+      "expected_live": [
+        "shared_lemma",
+        "live_user",
+        "target"
+      ],
+      "meta_mutation": "If tool removes shared_lemma, minimized won't compile.",
+      "properties": [
+        "S1",
+        "C1",
+        "C4"
+      ]
+    },
+    {
+      "file": "Test04_TransitiveDead.lean",
+      "targets": [
+        "target"
+      ],
+      "expected_dead": [
+        "dead_root",
+        "dead_middle",
+        "dead_leaf"
+      ],
+      "expected_live": [
+        "simple_fact",
+        "target"
+      ],
+      "meta_mutation": "If tool keeps dead_middle but removes dead_root, dead_middle breaks.",
+      "properties": [
+        "C1",
+        "C3"
+      ]
+    },
+    {
+      "file": "Test05_NoDead.lean",
+      "targets": [
+        "target"
+      ],
+      "expected_dead": [],
+      "expected_live": [
+        "fact_a",
+        "fact_b",
+        "fact_c",
+        "target"
+      ],
+      "meta_mutation": "If tool removes fact_a, target won't compile (fact_c needs it).",
+      "properties": [
+        "S1",
+        "E4"
+      ]
+    },
+    {
+      "file": "Test06_AllDead.lean",
+      "targets": [
+        "target"
+      ],
+      "expected_dead": [
+        "orphan_a",
+        "orphan_b",
+        "orphan_c"
+      ],
+      "expected_live": [
+        "target"
+      ],
+      "meta_mutation": "If tool keeps orphan_a, it's not maximally reduced.",
+      "properties": [
+        "C1",
+        "E3"
+      ]
+    },
+    {
+      "file": "Test07_DefAndTheorem.lean",
+      "targets": [
+        "target"
+      ],
+      "expected_dead": [
+        "dead_def",
+        "dead_about_dead"
+      ],
+      "expected_live": [
+        "helper_def",
+        "helper_property",
+        "target"
+      ],
+      "meta_mutation": "If tool removes helper_def, helper_property breaks.",
+      "properties": [
+        "S2",
+        "C2"
+      ]
+    },
+    {
+      "file": "Test08_TypeclassInstance.lean",
+      "targets": [
+        "target"
+      ],
+      "expected_dead": [
+        "dead_instance_user"
+      ],
+      "expected_live": [
+        "MyClass",
+        "myInstance",
+        "target"
+      ],
+      "meta_mutation": "If tool removes myInstance, target won't compile (instance resolution fails).",
+      "properties": [
+        "S3",
+        "E7"
+      ]
+    },
+    {
+      "file": "Test09_MutualRecDead.lean",
+      "targets": [
+        "target"
+      ],
+      "expected_dead": [
+        "dead_a",
+        "dead_b",
+        "dead_about_mutual"
+      ],
+      "expected_live": [
+        "live_fact",
+        "target"
+      ],
+      "meta_mutation": "If tool infinite-loops on mutual recursion, it fails the test.",
+      "properties": [
+        "C1",
+        "C3",
+        "E5"
+      ]
+    },
+    {
+      "file": "Test10_SorryDep.lean",
+      "targets": [
+        "target",
+        "target_frontier"
+      ],
+      "expected_dead": [
+        "dead_sorry"
+      ],
+      "expected_live": [
+        "sorry_lemma",
+        "sorry_target_dep",
+        "target",
+        "target_frontier"
+      ],
+      "meta_mutation": "If tool removes sorry_lemma (treating sorry as dead-signal), target breaks. If tool removes sorry_target_dep, target_frontier breaks. sorry is OPAQUE for liveness.",
+      "properties": [
+        "S1",
+        "E6"
+      ]
+    },
+    {
+      "file": "Test11_SimpAttribute.lean",
+      "targets": [
+        "target"
+      ],
+      "expected_dead": [
+        "dead_simp_lemma"
+      ],
+      "expected_live": [
+        "simp_lemma",
+        "target"
+      ],
+      "meta_mutation": "If tool removes simp_lemma, target's `by simp` fails.",
+      "properties": [
+        "S1",
+        "E8"
+      ]
+    },
+    {
+      "file": "Test12_HaveClause.lean",
+      "targets": [
+        "target"
+      ],
+      "expected_dead": [
+        "dead_fact"
+      ],
+      "expected_live": [
+        "inner_fact",
+        "target"
+      ],
+      "meta_mutation": "If tool removes inner_fact, target's `have h := inner_fact` fails.",
+      "properties": [
+        "S1",
+        "E9"
+      ]
+    },
+    {
+      "file": "Test13_MultipleTargets.lean",
+      "targets": [
+        "target_a",
+        "target_b"
+      ],
+      "expected_dead": [
+        "dead_lemma"
+      ],
+      "expected_live": [
+        "chain_a",
+        "chain_b",
+        "target_a",
+        "target_b"
+      ],
+      "meta_mutation": "If tool only preserves one target's chain, the other breaks.",
+      "properties": [
+        "E10"
+      ]
+    },
+    {
+      "file": "Test14_Idempotence.lean",
+      "targets": [
+        "target"
+      ],
+      "expected_dead": [],
+      "expected_live": [
+        "fact_one",
+        "target"
+      ],
+      "meta_mutation": "If running tool twice changes output, idempotence violated.",
+      "properties": [
+        "I1",
+        "I2",
+        "E2"
+      ]
+    },
+    {
+      "file": "Test15_DeepChain.lean",
+      "targets": [
+        "target"
+      ],
+      "expected_dead": [
+        "dead_deep"
+      ],
+      "expected_live": [
+        "chain_0",
+        "chain_1",
+        "chain_2",
+        "chain_3",
+        "chain_4",
+        "chain_5",
+        "chain_6",
+        "chain_7",
+        "chain_8",
+        "chain_9",
+        "chain_10",
+        "chain_11",
+        "chain_12",
+        "chain_13",
+        "chain_14",
+        "chain_15",
+        "chain_16",
+        "chain_17",
+        "chain_18",
+        "chain_19",
+        "target"
+      ],
+      "meta_mutation": "If tool truncates at depth N, chain items beyond N are wrongly removed.",
+      "properties": [
+        "S1",
+        "E12"
+      ]
+    },
+    {
+      "file": "Test16_Namespace.lean",
+      "targets": [
+        "target"
+      ],
+      "expected_dead": [
+        "MyNamespace.dead_in_ns"
+      ],
+      "expected_live": [
+        "MyNamespace.helper",
+        "target"
+      ],
+      "meta_mutation": "If tool strips namespace structure, qualified reference breaks.",
+      "properties": [
+        "S7",
+        "P3",
+        "P5"
+      ]
+    },
+    {
+      "file": "Test17_LiveUsesDead.lean",
+      "targets": [
+        "target"
+      ],
+      "expected_dead": [
+        "dead_user_of_live"
+      ],
+      "expected_live": [
+        "shared_base",
+        "target"
+      ],
+      "meta_mutation": "If tool wrongly keeps dead_user_of_live (because it uses live), completeness violated.",
+      "properties": [
+        "C4",
+        "S1"
+      ]
+    },
+    {
+      "file": "Test18_Empty.lean",
+      "targets": [],
+      "expected_dead": [],
+      "expected_live": [],
+      "meta_mutation": "If tool crashes on empty input, edge case E1 violated.",
+      "properties": [
+        "E1"
+      ]
+    }
+  ],
+  "coverage_matrix": {
+    "S1": [
+      "Test01",
+      "Test02",
+      "Test03",
+      "Test05",
+      "Test10",
+      "Test11",
+      "Test12",
+      "Test15",
+      "Test17"
+    ],
+    "S2": [
+      "Test07"
+    ],
+    "S3": [
+      "Test08"
+    ],
+    "S4": [
+      "implicit in all compile-acceptance tests"
+    ],
+    "S5": [
+      "ALL \u2014 lake build acceptance gate"
+    ],
+    "S6": [
+      "ALL \u2014 target always preserved"
+    ],
+    "S7": [
+      "Test16"
+    ],
+    "C1": [
+      "Test01",
+      "Test02",
+      "Test03",
+      "Test04",
+      "Test06",
+      "Test09"
+    ],
+    "C2": [
+      "Test07"
+    ],
+    "C3": [
+      "Test04",
+      "Test09"
+    ],
+    "C4": [
+      "Test03",
+      "Test17"
+    ],
+    "I1": [
+      "Test14"
+    ],
+    "I2": [
+      "Test14"
+    ],
+    "E1": [
+      "Test18"
+    ],
+    "E2": [
+      "Test14"
+    ],
+    "E3": [
+      "Test06"
+    ],
+    "E4": [
+      "Test05"
+    ],
+    "E5": [
+      "Test09"
+    ],
+    "E6": [
+      "Test10"
+    ],
+    "E7": [
+      "Test08"
+    ],
+    "E8": [
+      "Test11"
+    ],
+    "E9": [
+      "Test12"
+    ],
+    "E10": [
+      "Test13"
+    ],
+    "E11": [
+      "TODO \u2014 needs test"
+    ],
+    "E12": [
+      "Test15"
+    ],
+    "P1": [
+      "ALL \u2014 compile acceptance"
+    ],
+    "P2": [
+      "implicit in compile acceptance"
+    ],
+    "P3": [
+      "Test16"
+    ],
+    "P4": [
+      "best-effort \u2014 not strictly testable"
+    ],
+    "P5": [
+      "Test16"
+    ]
+  }
+}
