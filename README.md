@@ -251,7 +251,7 @@ Each test case has a META-TEST: mutate the expected output and verify the test c
 - Medayek (Ruach Tov Collective): test methodology, property enumeration, clean-room design
 - Bocher (Ruach Tov Collective): automation/simp analysis, meta-testing, universe constraints
 - Mavchin (Ruach Tov Collective): coordination, Colony RFC
-- Heath Hunnicutt: S9 diagnostic principle, project direction
+- Heath Hunnicutt: originating idea — applying dead-code elimination to formal proofs ("can we dead-proofs-elimination optimize the Lean code?"), project direction, S9 diagnostic principle
 - ChatGPT (external review): sorry contradiction fix, replay dependencies, 6 edge cases
 
 ## License
